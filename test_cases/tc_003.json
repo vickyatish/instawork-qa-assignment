@@ -1,0 +1,36 @@
+{
+  "title": "Waitlist feature and push-notification on spot availability",
+  "type": "integration",
+  "priority": "P2 - High",
+  "preconditions": "Instawork Pro app freshly installed; notification permissions granted; user is logged in; there is a full shift available to join the waitlist.",
+  "steps": [
+    {
+      "step_text": "Install or reinstall the Instawork Pro app to reset OS notification permissions, then launch the app.",
+      "step_expected": "The app opens to the welcome/sign-up screen and the OS push-notification permission modal appears requesting \"Instawork would like to send you notifications\"."
+    },
+    {
+      "step_text": "Tap \"Allow\" on the notification permission modal.",
+      "step_expected": "The modal is dismissed and the user remains on the app's current screen. A device push token is generated and sent to the backend (verify via network logs or debug endpoint)."
+    },
+    {
+      "step_text": "Kill and relaunch the app.",
+      "step_expected": "App launches without showing the OS notification permission modal again, indicating the permission state was saved."
+    },
+    {
+      "step_text": "Navigate to the in-app Settings \u203a Notifications screen.",
+      "step_expected": "Notification preference toggles are enabled, reflecting that push notifications are allowed."
+    },
+    {
+      "step_text": "Navigate to the Open Shifts feed and select a shift marked as 'Full'.",
+      "step_expected": "The Gig Details screen is displayed with a 'Join waitlist' button instead of 'Book shift'."
+    },
+    {
+      "step_text": "Tap 'Join waitlist'.",
+      "step_expected": "A confirmation toast appears with the message 'You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.'"
+    },
+    {
+      "step_text": "Have another Pro user cancel their booking for the same shift.",
+      "step_expected": "The first user in the waitlist is automatically booked and receives a push notification."
+    }
+  ]
+}

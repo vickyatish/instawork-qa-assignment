@@ -1,0 +1,36 @@
+{
+  "title": "Pro joins the waitlist for a full shift and gets booked when a spot opens up",
+  "type": "functional",
+  "priority": "P1 - Critical",
+  "preconditions": "Pro account is active, 'enable_shift_waitlist' feature is enabled, and there is a full shift available in the Open Shifts feed.",
+  "steps": [
+    {
+      "step_text": "From the Open Shifts feed, tap on a shift that is marked as 'Full'.",
+      "step_expected": "Shift detail screen is displayed with a 'Join waitlist' CTA."
+    },
+    {
+      "step_text": "Tap the 'Join waitlist' button.",
+      "step_expected": "A confirmation toast appears with the message 'You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.'"
+    },
+    {
+      "step_text": "Verify the analytics event 'waitlist_join' is fired with '{ shift_id, user_id }' parameters.",
+      "step_expected": "The 'waitlist_join' event is logged with the correct parameters."
+    },
+    {
+      "step_text": "Simulate another Pro cancelling their booking for the same shift.",
+      "step_expected": "The first user in the waitlist (the test Pro) is automatically booked for the shift."
+    },
+    {
+      "step_text": "Check for a push notification indicating that the Pro has been booked for the shift.",
+      "step_expected": "A push notification is received stating that the Pro has been booked for the shift."
+    },
+    {
+      "step_text": "Open the Instawork Pro app and navigate to the 'My Shifts' tab.",
+      "step_expected": "The shift for which the Pro was waitlisted and then booked is listed under 'Upcoming' shifts."
+    },
+    {
+      "step_text": "Tap on the booked shift.",
+      "step_expected": "Gig detail screen opens showing shift information and a 'Cancel shift' button, indicating that the shift has been successfully booked."
+    }
+  ]
+}
