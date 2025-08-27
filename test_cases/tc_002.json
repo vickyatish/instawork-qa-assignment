@@ -2,7 +2,7 @@
   "title": "Pro interacts with a full shift and manages waitlist",
   "type": "functional",
   "priority": "P1 - Critical",
-  "preconditions": "Pro account is active, has passed background check, and there is a full shift available in the Open Shifts feed.",
+  "preconditions": "Pro account is active, has passed background check, and there is a full shift available in the Open Shifts feed. The 'enable_shift_waitlist' feature is enabled.",
   "steps": [
     {
       "step_text": "From the Open Shifts feed, tap on a shift that is marked as 'Full'.",
@@ -10,7 +10,11 @@
     },
     {
       "step_text": "Tap the \"Join waitlist\" button.",
-      "step_expected": "A confirmation toast appears with the message: \"You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.\""
+      "step_expected": "A confirmation toast appears with the message: \"You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.\" The 'waitlist_join' analytics event is fired with the correct shift_id and user_id."
+    },
+    {
+      "step_text": "Simulate another Pro cancelling their booking for the same shift.",
+      "step_expected": "The test Pro is automatically booked for the shift and receives a push notification."
     },
     {
       "step_text": "Navigate to the Gig Details screen for the same shift.",

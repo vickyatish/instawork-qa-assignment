@@ -5,7 +5,7 @@
   "preconditions": "Pro account is active, 'enable_shift_waitlist' feature is enabled, and there is a full shift available in the Open Shifts feed.",
   "steps": [
     {
-      "step_text": "From the Open Shifts feed, tap on a shift that is marked as 'Full'.",
+      "step_text": "Ensure the 'enable_shift_waitlist' feature is enabled. From the Open Shifts feed, tap on a shift that is marked as 'Full'.",
       "step_expected": "Shift detail screen is displayed with a 'Join waitlist' CTA."
     },
     {

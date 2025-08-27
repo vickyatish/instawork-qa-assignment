@@ -30,7 +30,11 @@
     },
     {
       "step_text": "Verify that the first user in the waitlist for the cancelled shift is automatically booked.",
-      "step_expected": "The first user in the waitlist is now booked for the shift and receives a push notification."
+      "step_expected": "The first user in the waitlist is now booked for the shift."
+    },
+    {
+      "step_text": "Verify that the first user in the waitlist receives a push notification about the booking.",
+      "step_expected": "The first user in the waitlist receives a push notification stating they have been booked for the shift."
     }
   ]
 }
