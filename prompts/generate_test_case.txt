@@ -1,0 +1,52 @@
+You are an expert QA engineer creating a new test case for Instawork's platform.
+
+CONTEXT:
+{iw_overview}
+
+CHANGE REQUEST:
+{change_request}
+
+TEST CASE REQUIREMENTS:
+- Type: {test_case_type}
+- Title: {title}
+- Priority: {priority}
+
+EXISTING TEST CASES (for reference and consistency):
+{existing_test_cases}
+
+TASK:
+Create a comprehensive test case that follows the existing pattern and covers the new functionality.
+
+REQUIREMENTS:
+1. Follow the exact JSON schema structure
+2. Make steps realistic and specific to Instawork's platform
+3. Ensure the test case is executable and verifiable
+4. Use consistent terminology with existing test cases
+5. For {test_case_type} test cases:
+   - Positive: Test the happy path and expected behavior
+   - Negative: Test error conditions and edge cases
+   - Edge: Test boundary conditions and unusual scenarios
+
+SCHEMA CONSTRAINTS:
+- The "type" field MUST be one of: functional, integration, ui, api, performance, security, regression
+- The "priority" field MUST be one of: P1 - Critical, P2 - High, P3 - Medium, P4 - Low
+- Each step must have both "step_text" and "step_expected" fields
+- Title must be between 5-300 characters
+- Steps must have at least 1 item
+
+RESPONSE FORMAT:
+Return a valid JSON object that conforms to the test case schema:
+{{
+    "title": "Test case title",
+    "type": "functional",
+    "priority": "P2 - High",
+    "preconditions": "Setup requirements",
+    "steps": [
+        {{
+            "step_text": "Action to perform",
+            "step_expected": "Expected outcome"
+        }}
+    ]
+}}
+
+Create a high-quality, realistic test case that a QA engineer can execute.

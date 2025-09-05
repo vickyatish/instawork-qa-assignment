@@ -1,10 +1,13 @@
 import time
 import os
+import uuid
 from typing import List, Dict, Any, Optional
 from .config import Config
 from .llm_client import LLMClient
 from .test_case_manager import TestCaseManager
 from .report_generator import ReportGenerator
+from .semantic_retriever import SemanticRetriever
+from .observability import ObservabilityManager
 
 class AITestCopilot:
     """Main AI Test Case Copilot that orchestrates the entire process."""
@@ -17,6 +20,8 @@ class AITestCopilot:
         self.llm_client = LLMClient()
         self.test_case_manager = TestCaseManager()
         self.report_generator = ReportGenerator()
+        self.semantic_retriever = SemanticRetriever(k=5)  # Top 5 relevant test cases
+        self.observability = ObservabilityManager()
     
     def process_change_request(self, change_request_path: str) -> str:
         """
@@ -28,6 +33,12 @@ class AITestCopilot:
         Returns:
             Path to the generated report
         """
+        # Generate session ID for tracking
+        session_id = str(uuid.uuid4())
+        
+        # Start observability session
+        self.observability.start_session(session_id, change_request_path)
+        
         start_time = time.time()
         execution_summary = {
             'status': 'success',
@@ -43,32 +54,44 @@ class AITestCopilot:
             
             # Step 2: Load context and existing test cases
             iw_overview = self._load_iw_overview()
-            existing_test_cases = self.test_case_manager.load_all_test_cases()
-            execution_summary['total_analyzed'] = len(existing_test_cases)
+            all_test_cases = self.test_case_manager.load_all_test_cases()
             
-            # Step 3: Analyze the change request
+            # Step 3: Use semantic retrieval to get relevant test cases
+            self.semantic_retriever.fit(all_test_cases)
+            relevant_test_cases = self.semantic_retriever.retrieve_relevant(change_request)
+            execution_summary['total_analyzed'] = len(relevant_test_cases)
+            
+            # Step 4: Analyze the change request with relevant test cases only
             analysis_result = self.llm_client.analyze_change_request(
-                change_request, iw_overview, existing_test_cases
+                change_request, iw_overview, relevant_test_cases, session_id
             )
             
-            # Step 4: Process impacted test cases
+            # Step 5: Process impacted test cases
             updated_test_cases = self._process_impacted_test_cases(
-                change_request, iw_overview, analysis_result, existing_test_cases
+                change_request, iw_overview, analysis_result, all_test_cases, session_id
             )
             execution_summary['total_updated'] = len(updated_test_cases)
             
-            # Step 5: Generate new test cases
+            # Step 6: Generate new test cases
             new_test_cases = self._generate_new_test_cases(
-                change_request, iw_overview, analysis_result, existing_test_cases
+                change_request, iw_overview, analysis_result, relevant_test_cases, session_id
             )
             execution_summary['total_created'] = len(new_test_cases)
             
-            # Step 6: Generate report
+            # Step 7: Generate report
             execution_time = time.time() - start_time
             execution_summary['execution_time'] = f"{execution_time:.2f} seconds"
             
             report_path = self.report_generator.generate_report(
                 change_request, analysis_result, updated_test_cases, new_test_cases, execution_summary
+            )
+            
+            # End session successfully
+            self.observability.end_session(
+                session_id, 
+                "success",
+                test_cases_generated=len(new_test_cases),
+                test_cases_updated=len(updated_test_cases)
             )
             
             return report_path
@@ -77,6 +100,9 @@ class AITestCopilot:
             execution_summary['status'] = 'error'
             execution_summary['errors'].append(str(e))
             execution_summary['execution_time'] = f"{time.time() - start_time:.2f} seconds"
+            
+            # End session with error
+            self.observability.end_session(session_id, "error")
             
             # Generate error report
             error_report = self.report_generator.generate_report(
@@ -108,7 +134,8 @@ class AITestCopilot:
         change_request: str,
         iw_overview: str,
         analysis_result: Dict[str, Any],
-        existing_test_cases: List[Dict[str, Any]]
+        existing_test_cases: List[Dict[str, Any]],
+        session_id: str = None
     ) -> List[Dict[str, Any]]:
         """Process and update impacted test cases."""
         updated_test_cases = []
@@ -138,7 +165,7 @@ class AITestCopilot:
                 # Update the test case using LLM
                 updated_test_case = self.llm_client.update_existing_test_case(
                     change_request, iw_overview, existing_test_case, 
-                    impacted.get('required_changes', [])
+                    impacted.get('required_changes', []), session_id
                 )
                 
                 # Save the updated test case
@@ -166,7 +193,8 @@ class AITestCopilot:
         change_request: str,
         iw_overview: str,
         analysis_result: Dict[str, Any],
-        existing_test_cases: List[Dict[str, Any]]
+        existing_test_cases: List[Dict[str, Any]],
+        session_id: str = None
     ) -> List[Dict[str, Any]]:
         """Generate new test cases based on the analysis."""
         new_test_cases = []
@@ -182,7 +210,7 @@ class AITestCopilot:
                 
                 # Generate the test case using LLM
                 new_test_case = self.llm_client.generate_test_case(
-                    change_request, iw_overview, test_case_type, title, priority, existing_test_cases
+                    change_request, iw_overview, test_case_type, title, priority, existing_test_cases, session_id
                 )
                 
                 # Save the new test case
@@ -251,3 +279,11 @@ class AITestCopilot:
                 'status': 'error',
                 'error': str(e)
             }
+    
+    def get_metrics(self) -> Dict[str, Any]:
+        """Get observability metrics."""
+        return self.observability.get_metrics_summary()
+    
+    def get_recent_sessions(self, limit: int = 10) -> List[Dict[str, Any]]:
+        """Get recent processing sessions."""
+        return self.observability.get_recent_sessions(limit)

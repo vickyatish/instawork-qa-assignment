@@ -191,6 +191,58 @@ def show_case(test_case_id):
         raise click.Abort()
 
 @cli.command()
+def metrics():
+    """Show observability metrics."""
+    try:
+        copilot = AITestCopilot()
+        metrics = copilot.get_metrics()
+        
+        click.echo(f"{Fore.CYAN}AI Test Copilot Metrics{Style.RESET_ALL}")
+        click.echo("=" * 30)
+        click.echo(f"Total Requests: {metrics['total_requests']}")
+        click.echo(f"Success Rate: {Fore.GREEN}{metrics['success_rate']}%{Style.RESET_ALL}")
+        click.echo(f"Total Tokens Used: {metrics['total_tokens_used']:,}")
+        click.echo(f"Total Cost: ${metrics['total_cost']:.4f}")
+        click.echo(f"Average Response Time: {metrics['average_response_time']}s")
+        click.echo(f"Test Cases Generated: {metrics['test_cases_generated']}")
+        click.echo(f"Test Cases Updated: {metrics['test_cases_updated']}")
+        click.echo(f"Schema Validation Failures: {Fore.RED}{metrics['schema_validation_failures']}{Style.RESET_ALL}")
+        click.echo(f"Retry Attempts: {Fore.YELLOW}{metrics['retry_attempts']}{Style.RESET_ALL}")
+        
+    except Exception as e:
+        click.echo(f"{Fore.RED}✗ Error getting metrics: {str(e)}{Style.RESET_ALL}")
+        raise click.Abort()
+
+@cli.command()
+@click.option('--limit', '-l', default=5, help='Number of recent sessions to show')
+def sessions(limit):
+    """Show recent processing sessions."""
+    try:
+        copilot = AITestCopilot()
+        sessions = copilot.get_recent_sessions(limit)
+        
+        click.echo(f"{Fore.CYAN}Recent Sessions ({len(sessions)}){Style.RESET_ALL}")
+        click.echo("=" * 40)
+        
+        for session in sessions:
+            status_color = Fore.GREEN if session.get('status') == 'success' else Fore.RED
+            click.echo(f"Session: {session.get('session_id', 'Unknown')[:8]}...")
+            click.echo(f"  Status: {status_color}{session.get('status', 'Unknown')}{Style.RESET_ALL}")
+            click.echo(f"  Start: {session.get('start_time', 'Unknown')}")
+            click.echo(f"  End: {session.get('end_time', 'Running...')}")
+            click.echo(f"  Tokens: {session.get('tokens_used', 0):,}")
+            click.echo(f"  Cost: ${session.get('cost', 0):.4f}")
+            click.echo(f"  Generated: {session.get('test_cases_generated', 0)}")
+            click.echo(f"  Updated: {session.get('test_cases_updated', 0)}")
+            if session.get('errors'):
+                click.echo(f"  Errors: {Fore.RED}{len(session['errors'])}{Style.RESET_ALL}")
+            click.echo()
+        
+    except Exception as e:
+        click.echo(f"{Fore.RED}✗ Error getting sessions: {str(e)}{Style.RESET_ALL}")
+        raise click.Abort()
+
+@cli.command()
 def setup():
     """Show setup instructions."""
     click.echo(f"{Fore.CYAN}AI Test Copilot Setup Instructions{Style.RESET_ALL}")
@@ -210,6 +262,10 @@ def setup():
     click.echo()
     click.echo("5. Process a change request:")
     click.echo("   python -m src.cli process -c sample_change_requests/sample_change_request_new_feature.md")
+    click.echo()
+    click.echo("6. View metrics and sessions:")
+    click.echo("   python -m src.cli metrics")
+    click.echo("   python -m src.cli sessions")
     click.echo()
     click.echo("For more help:")
     click.echo("   python -m src.cli --help")

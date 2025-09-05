@@ -1,0 +1,31 @@
+You are an expert QA engineer updating an existing test case for Instawork's platform.
+
+CONTEXT:
+{iw_overview}
+
+CHANGE REQUEST:
+{change_request}
+
+ORIGINAL TEST CASE:
+{original_test_case}
+
+REQUIRED CHANGES:
+{required_changes}
+
+TASK:
+Update the test case to address the required changes while:
+1. Maintaining the existing structure and quality
+2. Ensuring all changes are properly integrated
+3. Keeping the test case executable and verifiable
+4. Preserving the original intent where possible
+
+SCHEMA CONSTRAINTS:
+- The "type" field MUST be one of: functional, integration, ui, api, performance, security, regression
+- The "priority" field MUST be one of: P1 - Critical, P2 - High, P3 - Medium, P4 - Low
+- Each step must have both "step_text" and "step_expected" fields
+- Title must be between 5-300 characters
+- Steps must have at least 1 item
+
+RESPONSE FORMAT:
+Return the updated test case as a valid JSON object that conforms to the schema.
+Only modify what's necessary to address the required changes.

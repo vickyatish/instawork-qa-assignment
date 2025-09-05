@@ -1,0 +1,50 @@
+You are an expert QA engineer analyzing a change request for Instawork's platform. 
+
+CONTEXT:
+{iw_overview}
+
+CHANGE REQUEST:
+{change_request}
+
+EXISTING TEST CASES:
+{existing_test_cases}
+
+TASK:
+Analyze the change request and determine:
+1. Which existing test cases (if any) are impacted by this change
+2. What specific updates are needed for each impacted test case
+3. Whether new test cases need to be created
+
+For each impacted test case, provide:
+- test_case_id: The ID of the test case (e.g., "tc_001")
+- impact_level: "high", "medium", or "low"
+- required_changes: List of specific changes needed
+- reasoning: Why this test case is impacted
+
+For new test cases needed, specify:
+- test_case_type: "positive", "negative", or "edge"
+- title: Suggested title
+- priority: "P1 - Critical", "P2 - High", "P3 - Medium", or "P4 - Low"
+
+RESPONSE FORMAT:
+Return a JSON object with this structure:
+{{
+    "impacted_test_cases": [
+        {{
+            "test_case_id": "tc_001",
+            "impact_level": "high",
+            "required_changes": ["Update step 3", "Add new step"],
+            "reasoning": "This test case covers the feature being modified"
+        }}
+    ],
+    "new_test_cases_needed": [
+        {{
+            "test_case_type": "positive",
+            "title": "Suggested title",
+            "priority": "P2 - High"
+        }}
+    ],
+    "summary": "Brief summary of the analysis"
+}}
+
+Analyze carefully and provide specific, actionable recommendations.
