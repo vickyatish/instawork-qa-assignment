@@ -19,8 +19,12 @@ class TestConfig:
         with patch('src.config.load_dotenv') as mock_load_dotenv:
             mock_load_dotenv.return_value = None
             with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}, clear=True):
-                config = Config()
-                assert config.OPENAI_API_KEY is not None
+                # Force reload the config module to pick up the new env var
+                import importlib
+                import src.config
+                importlib.reload(src.config)
+                config = src.config.Config()
+                assert config.OPENAI_API_KEY == 'test-key'
     
     def test_default_values(self):
         """Test that default values are set correctly."""
@@ -37,8 +41,12 @@ class TestConfig:
         with patch('src.config.load_dotenv') as mock_load_dotenv:
             mock_load_dotenv.return_value = None
             with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key', 'OPENAI_MODEL': 'gpt-3.5-turbo'}, clear=True):
-                config = Config()
-                assert config.OPENAI_MODEL is not None
+                # Force reload the config module to pick up the new env var
+                import importlib
+                import src.config
+                importlib.reload(src.config)
+                config = src.config.Config()
+                assert config.OPENAI_MODEL == 'gpt-3.5-turbo'
     
     def test_validate_missing_files(self):
         """Test that validation fails with missing required files."""
@@ -59,6 +67,11 @@ class TestConfig:
         with patch('src.config.load_dotenv') as mock_load_dotenv:
             mock_load_dotenv.return_value = None
             with patch.dict(os.environ, {'OPENAI_API_KEY': 'test-key'}, clear=True):
+                # Force reload the config module to pick up the new env var
+                import importlib
+                import src.config
+                importlib.reload(src.config)
+                
                 with tempfile.TemporaryDirectory() as temp_dir:
                     # Create required files
                     iw_overview_path = os.path.join(temp_dir, 'IW_OVERVIEW.md')
@@ -74,10 +87,10 @@ class TestConfig:
                         f.write('{"type": "object"}')
                     
                     # Patch config paths
-                    with patch.object(Config, 'IW_OVERVIEW_PATH', iw_overview_path):
-                        with patch.object(Config, 'TEST_CASES_DIR', test_cases_dir):
-                            with patch.object(Config, 'SCHEMA_PATH', schema_path):
-                                config = Config()
+                    with patch.object(src.config.Config, 'IW_OVERVIEW_PATH', iw_overview_path):
+                        with patch.object(src.config.Config, 'TEST_CASES_DIR', test_cases_dir):
+                            with patch.object(src.config.Config, 'SCHEMA_PATH', schema_path):
+                                config = src.config.Config()
                                 # Should not raise an exception
                                 config.validate()
                                 
