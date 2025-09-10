@@ -1,0 +1,336 @@
+[
+  {
+    "text": "Pro interacts with a full shift and manages waitlist functional P1 - Critical Pro account is active, has passed background check, and there is a full shift available in the Open Shifts feed. The 'enable_shift_waitlist' feature is enabled. From the Open Shifts feed, tap on a shift that is marked as 'Full'. Shift detail screen is displayed with a \"Join waitlist\" CTA. Tap the \"Join waitlist\" button. A confirmation toast appears with the message: \"You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.\" The 'waitlist_join' analytics event is fired with the correct shift_id and user_id. Simulate another Pro cancelling their booking for the same shift. The test Pro is automatically booked for the shift and receives a push notification. Navigate to the Gig Details screen for the same shift. An option to remove oneself from the waitlist is available. Tap the option to remove oneself from the waitlist. Pro is removed from the waitlist and a confirmation message is displayed. From the Open Shifts feed, tap on a shift that displays prerequisite requirements badge. Shift detail screen is displayed with a \"Book shift\" CTA. Tap the \"Book shift\" button. \"Accept these terms to book this shift\" screen appears (unless removed by experiment). Accept all general terms presented until the prerequisite terms card, then tap \"Review requirements\". Prerequisite screen (e.g., Attire requirements) is displayed. Tap \"I'm committed\" on the prerequisite screen. User returns to the Accept Terms screen. Under the \"I commit to upholding all other work requirements for this shift\" term, tap \"I accept\". \"Awesome, your shift is booked\" confirmation screen appears with \"Verify shift requirements\" bottom sheet. Tap \"Verify now\" on the bottom sheet. App navigates through each prerequisite verification question screen. Respond \"Yes\" to each prerequisite question until completion. \"Yay! You meet all the requirements for this shift\" success screen appears with a \"Thanks\" button. Tap \"Thanks\". Gig detail screen opens with the shift status marked as Booked.",
+    "metadata": {
+      "file_name": "tc_002.json",
+      "title": "Pro interacts with a full shift and manages waitlist",
+      "type": "functional",
+      "priority": "P1 - Critical",
+      "original_test_case": {
+        "title": "Pro interacts with a full shift and manages waitlist",
+        "type": "functional",
+        "priority": "P1 - Critical",
+        "preconditions": "Pro account is active, has passed background check, and there is a full shift available in the Open Shifts feed. The 'enable_shift_waitlist' feature is enabled.",
+        "steps": [
+          {
+            "step_text": "From the Open Shifts feed, tap on a shift that is marked as 'Full'.",
+            "step_expected": "Shift detail screen is displayed with a \"Join waitlist\" CTA."
+          },
+          {
+            "step_text": "Tap the \"Join waitlist\" button.",
+            "step_expected": "A confirmation toast appears with the message: \"You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.\" The 'waitlist_join' analytics event is fired with the correct shift_id and user_id."
+          },
+          {
+            "step_text": "Simulate another Pro cancelling their booking for the same shift.",
+            "step_expected": "The test Pro is automatically booked for the shift and receives a push notification."
+          },
+          {
+            "step_text": "Navigate to the Gig Details screen for the same shift.",
+            "step_expected": "An option to remove oneself from the waitlist is available."
+          },
+          {
+            "step_text": "Tap the option to remove oneself from the waitlist.",
+            "step_expected": "Pro is removed from the waitlist and a confirmation message is displayed."
+          },
+          {
+            "step_text": "From the Open Shifts feed, tap on a shift that displays prerequisite requirements badge.",
+            "step_expected": "Shift detail screen is displayed with a \"Book shift\" CTA."
+          },
+          {
+            "step_text": "Tap the \"Book shift\" button.",
+            "step_expected": "\"Accept these terms to book this shift\" screen appears (unless removed by experiment)."
+          },
+          {
+            "step_text": "Accept all general terms presented until the prerequisite terms card, then tap \"Review requirements\".",
+            "step_expected": "Prerequisite screen (e.g., Attire requirements) is displayed."
+          },
+          {
+            "step_text": "Tap \"I'm committed\" on the prerequisite screen.",
+            "step_expected": "User returns to the Accept Terms screen."
+          },
+          {
+            "step_text": "Under the \"I commit to upholding all other work requirements for this shift\" term, tap \"I accept\".",
+            "step_expected": "\"Awesome, your shift is booked\" confirmation screen appears with \"Verify shift requirements\" bottom sheet."
+          },
+          {
+            "step_text": "Tap \"Verify now\" on the bottom sheet.",
+            "step_expected": "App navigates through each prerequisite verification question screen."
+          },
+          {
+            "step_text": "Respond \"Yes\" to each prerequisite question until completion.",
+            "step_expected": "\"Yay! You meet all the requirements for this shift\" success screen appears with a \"Thanks\" button."
+          },
+          {
+            "step_text": "Tap \"Thanks\".",
+            "step_expected": "Gig detail screen opens with the shift status marked as Booked."
+          }
+        ],
+        "_file_path": "test_cases/tc_002.json",
+        "_file_name": "tc_002.json"
+      }
+    }
+  },
+  {
+    "text": "Waitlist feature and push-notification on spot availability integration P2 - High Instawork Pro app freshly installed; notification permissions granted; user is logged in; there is a full shift available to join the waitlist; 'enable_shift_waitlist' feature is enabled. Install or reinstall the Instawork Pro app to reset OS notification permissions, then launch the app. The app opens to the welcome/sign-up screen and the OS push-notification permission modal appears requesting \"Instawork would like to send you notifications\". Tap \"Allow\" on the notification permission modal. The modal is dismissed and the user remains on the app's current screen. A device push token is generated and sent to the backend (verify via network logs or debug endpoint). Kill and relaunch the app. App launches without showing the OS notification permission modal again, indicating the permission state was saved. Navigate to the in-app Settings \u203a Notifications screen. Notification preference toggles are enabled, reflecting that push notifications are allowed. Ensure that the 'enable_shift_waitlist' feature is enabled. The 'enable_shift_waitlist' feature is enabled. Navigate to the Open Shifts feed and select a shift marked as 'Full'. The Gig Details screen is displayed with a 'Join waitlist' button instead of 'Book shift'. Tap 'Join waitlist'. A confirmation toast appears with the message 'You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.' The 'waitlist_join' analytics event is fired with '{ shift_id, user_id }' (verify via network logs or debug endpoint). Have another Pro user cancel their booking for the same shift. The first user in the waitlist is automatically booked and receives a push notification.",
+    "metadata": {
+      "file_name": "tc_003.json",
+      "title": "Waitlist feature and push-notification on spot availability",
+      "type": "integration",
+      "priority": "P2 - High",
+      "original_test_case": {
+        "title": "Waitlist feature and push-notification on spot availability",
+        "type": "integration",
+        "priority": "P2 - High",
+        "preconditions": "Instawork Pro app freshly installed; notification permissions granted; user is logged in; there is a full shift available to join the waitlist; 'enable_shift_waitlist' feature is enabled.",
+        "steps": [
+          {
+            "step_text": "Install or reinstall the Instawork Pro app to reset OS notification permissions, then launch the app.",
+            "step_expected": "The app opens to the welcome/sign-up screen and the OS push-notification permission modal appears requesting \"Instawork would like to send you notifications\"."
+          },
+          {
+            "step_text": "Tap \"Allow\" on the notification permission modal.",
+            "step_expected": "The modal is dismissed and the user remains on the app's current screen. A device push token is generated and sent to the backend (verify via network logs or debug endpoint)."
+          },
+          {
+            "step_text": "Kill and relaunch the app.",
+            "step_expected": "App launches without showing the OS notification permission modal again, indicating the permission state was saved."
+          },
+          {
+            "step_text": "Navigate to the in-app Settings \u203a Notifications screen.",
+            "step_expected": "Notification preference toggles are enabled, reflecting that push notifications are allowed."
+          },
+          {
+            "step_text": "Ensure that the 'enable_shift_waitlist' feature is enabled.",
+            "step_expected": "The 'enable_shift_waitlist' feature is enabled."
+          },
+          {
+            "step_text": "Navigate to the Open Shifts feed and select a shift marked as 'Full'.",
+            "step_expected": "The Gig Details screen is displayed with a 'Join waitlist' button instead of 'Book shift'."
+          },
+          {
+            "step_text": "Tap 'Join waitlist'.",
+            "step_expected": "A confirmation toast appears with the message 'You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.' The 'waitlist_join' analytics event is fired with '{ shift_id, user_id }' (verify via network logs or debug endpoint)."
+          },
+          {
+            "step_text": "Have another Pro user cancel their booking for the same shift.",
+            "step_expected": "The first user in the waitlist is automatically booked and receives a push notification."
+          }
+        ],
+        "_file_path": "test_cases/tc_003.json",
+        "_file_name": "tc_003.json"
+      }
+    }
+  },
+  {
+    "text": "Pro cancels a booked shift within the allowed cancellation window and waitlisted Pro is booked functional P2 - High Pro account is active with at least one future shift booked more than 24 hours before start time (cancellation allowed). Another Pro is on the waitlist for the same shift. Open the Instawork Pro app and navigate to the \"My Shifts\" tab (or Upcoming tab). List of upcoming booked shifts is displayed. Tap the booked shift that starts more than 24 hours from now. Gig detail screen opens showing shift information and a \"Cancel shift\" button. Tap the \"Cancel shift\" button. Cancellation reason modal appears with \"Yes, cancel shift\" confirmation CTA. Select a cancellation reason (e.g., \"Personal reasons\") and tap \"Yes, cancel shift\". Confirmation toast \"Shift cancelled\" appears and user is redirected back to My Shifts list. Verify the cancelled shift no longer appears under Upcoming shifts. Shift is removed from Upcoming list and appears under Past/Cancelled section with status \"Cancelled\". Check account reliability metrics (optional analytics debug or UI). Reliability metrics update appropriately; no reliability penalty is assessed because cancellation occurred within allowed window. Verify that the first user in the waitlist for the cancelled shift is automatically booked. The first user in the waitlist is now booked for the shift. Verify that the first user in the waitlist receives a push notification about the booking. The first user in the waitlist receives a push notification stating they have been booked for the shift.",
+    "metadata": {
+      "file_name": "tc_004.json",
+      "title": "Pro cancels a booked shift within the allowed cancellation window and waitlisted Pro is booked",
+      "type": "functional",
+      "priority": "P2 - High",
+      "original_test_case": {
+        "title": "Pro cancels a booked shift within the allowed cancellation window and waitlisted Pro is booked",
+        "type": "functional",
+        "priority": "P2 - High",
+        "preconditions": "Pro account is active with at least one future shift booked more than 24 hours before start time (cancellation allowed). Another Pro is on the waitlist for the same shift.",
+        "steps": [
+          {
+            "step_text": "Open the Instawork Pro app and navigate to the \"My Shifts\" tab (or Upcoming tab).",
+            "step_expected": "List of upcoming booked shifts is displayed."
+          },
+          {
+            "step_text": "Tap the booked shift that starts more than 24 hours from now.",
+            "step_expected": "Gig detail screen opens showing shift information and a \"Cancel shift\" button."
+          },
+          {
+            "step_text": "Tap the \"Cancel shift\" button.",
+            "step_expected": "Cancellation reason modal appears with \"Yes, cancel shift\" confirmation CTA."
+          },
+          {
+            "step_text": "Select a cancellation reason (e.g., \"Personal reasons\") and tap \"Yes, cancel shift\".",
+            "step_expected": "Confirmation toast \"Shift cancelled\" appears and user is redirected back to My Shifts list."
+          },
+          {
+            "step_text": "Verify the cancelled shift no longer appears under Upcoming shifts.",
+            "step_expected": "Shift is removed from Upcoming list and appears under Past/Cancelled section with status \"Cancelled\"."
+          },
+          {
+            "step_text": "Check account reliability metrics (optional analytics debug or UI).",
+            "step_expected": "Reliability metrics update appropriately; no reliability penalty is assessed because cancellation occurred within allowed window."
+          },
+          {
+            "step_text": "Verify that the first user in the waitlist for the cancelled shift is automatically booked.",
+            "step_expected": "The first user in the waitlist is now booked for the shift."
+          },
+          {
+            "step_text": "Verify that the first user in the waitlist receives a push notification about the booking.",
+            "step_expected": "The first user in the waitlist receives a push notification stating they have been booked for the shift."
+          }
+        ],
+        "_file_path": "test_cases/tc_004.json",
+        "_file_name": "tc_004.json"
+      }
+    }
+  },
+  {
+    "text": "Automatic approval of entry-level positions after onboarding regression P3 - Medium Pro account just completed onboarding successfully without selecting any positions. Complete the onboarding flow as per tc_001 (no positions selected, no resume). Pro lands on the Open Shifts screen after account creation confirmation. Navigate to the Profile \u203a Positions tab. Six entry-level positions (General Labor, Warehouse Associate - Entry Level, Event Setup and Takedown, Custodial, Counter Staff / Cashier, Concession / Stand Worker) are displayed with status \"Approved\". Verify backend data via Django admin or GraphQL endpoint for the user profile positions list. The six entry-level positions exist on the user profile with status=approved and approval_source=\"auto\". Search the Open Shifts feed for a shift that requires one of the entry-level positions (e.g., General Labor). Shift cards requiring the position are visible and can be tapped. Tap a shift requiring an entry-level position and observe the \"Book shift\" button. \"Book shift\" CTA is enabled without requiring additional position approval.",
+    "metadata": {
+      "file_name": "tc_005.json",
+      "title": "Automatic approval of entry-level positions after onboarding",
+      "type": "regression",
+      "priority": "P3 - Medium",
+      "original_test_case": {
+        "title": "Automatic approval of entry-level positions after onboarding",
+        "type": "regression",
+        "priority": "P3 - Medium",
+        "preconditions": "Pro account just completed onboarding successfully without selecting any positions.",
+        "steps": [
+          {
+            "step_text": "Complete the onboarding flow as per tc_001 (no positions selected, no resume).",
+            "step_expected": "Pro lands on the Open Shifts screen after account creation confirmation."
+          },
+          {
+            "step_text": "Navigate to the Profile \u203a Positions tab.",
+            "step_expected": "Six entry-level positions (General Labor, Warehouse Associate - Entry Level, Event Setup and Takedown, Custodial, Counter Staff / Cashier, Concession / Stand Worker) are displayed with status \"Approved\"."
+          },
+          {
+            "step_text": "Verify backend data via Django admin or GraphQL endpoint for the user profile positions list.",
+            "step_expected": "The six entry-level positions exist on the user profile with status=approved and approval_source=\"auto\"."
+          },
+          {
+            "step_text": "Search the Open Shifts feed for a shift that requires one of the entry-level positions (e.g., General Labor).",
+            "step_expected": "Shift cards requiring the position are visible and can be tapped."
+          },
+          {
+            "step_text": "Tap a shift requiring an entry-level position and observe the \"Book shift\" button.",
+            "step_expected": "\"Book shift\" CTA is enabled without requiring additional position approval."
+          }
+        ],
+        "_file_path": "test_cases/tc_005.json",
+        "_file_name": "tc_005.json"
+      }
+    }
+  },
+  {
+    "text": "Pro joins the waitlist for a full shift and gets booked when a spot opens up functional P1 - Critical Pro account is active, 'enable_shift_waitlist' feature is enabled, and there is a full shift available in the Open Shifts feed. Ensure the 'enable_shift_waitlist' feature is enabled. From the Open Shifts feed, tap on a shift that is marked as 'Full'. Shift detail screen is displayed with a 'Join waitlist' CTA. Tap the 'Join waitlist' button. A confirmation toast appears with the message 'You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.' Verify the analytics event 'waitlist_join' is fired with '{ shift_id, user_id }' parameters. The 'waitlist_join' event is logged with the correct parameters. Simulate another Pro cancelling their booking for the same shift. The first user in the waitlist (the test Pro) is automatically booked for the shift. Check for a push notification indicating that the Pro has been booked for the shift. A push notification is received stating that the Pro has been booked for the shift. Open the Instawork Pro app and navigate to the 'My Shifts' tab. The shift for which the Pro was waitlisted and then booked is listed under 'Upcoming' shifts. Tap on the booked shift. Gig detail screen opens showing shift information and a 'Cancel shift' button, indicating that the shift has been successfully booked.",
+    "metadata": {
+      "file_name": "tc_006.json",
+      "title": "Pro joins the waitlist for a full shift and gets booked when a spot opens up",
+      "type": "functional",
+      "priority": "P1 - Critical",
+      "original_test_case": {
+        "title": "Pro joins the waitlist for a full shift and gets booked when a spot opens up",
+        "type": "functional",
+        "priority": "P1 - Critical",
+        "preconditions": "Pro account is active, 'enable_shift_waitlist' feature is enabled, and there is a full shift available in the Open Shifts feed.",
+        "steps": [
+          {
+            "step_text": "Ensure the 'enable_shift_waitlist' feature is enabled. From the Open Shifts feed, tap on a shift that is marked as 'Full'.",
+            "step_expected": "Shift detail screen is displayed with a 'Join waitlist' CTA."
+          },
+          {
+            "step_text": "Tap the 'Join waitlist' button.",
+            "step_expected": "A confirmation toast appears with the message 'You\u2019ve been added to the waitlist. We\u2019ll notify you if a spot opens.'"
+          },
+          {
+            "step_text": "Verify the analytics event 'waitlist_join' is fired with '{ shift_id, user_id }' parameters.",
+            "step_expected": "The 'waitlist_join' event is logged with the correct parameters."
+          },
+          {
+            "step_text": "Simulate another Pro cancelling their booking for the same shift.",
+            "step_expected": "The first user in the waitlist (the test Pro) is automatically booked for the shift."
+          },
+          {
+            "step_text": "Check for a push notification indicating that the Pro has been booked for the shift.",
+            "step_expected": "A push notification is received stating that the Pro has been booked for the shift."
+          },
+          {
+            "step_text": "Open the Instawork Pro app and navigate to the 'My Shifts' tab.",
+            "step_expected": "The shift for which the Pro was waitlisted and then booked is listed under 'Upcoming' shifts."
+          },
+          {
+            "step_text": "Tap on the booked shift.",
+            "step_expected": "Gig detail screen opens showing shift information and a 'Cancel shift' button, indicating that the shift has been successfully booked."
+          }
+        ],
+        "_file_path": "test_cases/tc_006.json",
+        "_file_name": "tc_006.json"
+      }
+    }
+  },
+  {
+    "text": "Pro completes onboarding without resume or position selection functional P2 - High Ensure 'new_onboarding_flow' feature is enabled and the app is freshly installed. Launch the Pro app and tap \"Create account\" Sign-up form is displayed Enter first name, last name, and a valid phone number (leave email blank) then tap \"Next\" SMS verification code screen is displayed Enter the valid verification code received via SMS and tap \"Next\" If first install, OS push-notification permission prompt appears Tap \"Allow\" on the push-notification prompt User proceeds to the profile photo screen Add a profile photo on the \"Add your profile photo\" screen \"Next\" button becomes enabled Tap \"Next\" to continue Date-of-birth entry screen appears Enter a valid birthdate (18+ years old) and tap \"Next\" Location entry screen appears Enter a valid home location and tap \"Next\" Entry-level positions selection screen appears Without selecting any positions, tap \"Next\" Advanced positions selection screen appears Without selecting any advanced positions, tap \"Next\" Resume import screen appears Tap \"Don't have a resume?\" link \"Review and save profile\" screen appears with pre-filled name & location only Scroll to the bottom and tap \"Save profile\" Contractor Service Agreement screen appears Scroll to the bottom of the agreement and tap \"I agree and accept\" Congrats screen appears with \"Book your first shift\" CTA and green toast Tap \"Book your first shift\" CTA Open Shifts screen appears; account status is active and six entry-level positions are auto-approved",
+    "metadata": {
+      "file_name": "tc_001.json",
+      "title": "Pro completes onboarding without resume or position selection",
+      "type": "functional",
+      "priority": "P2 - High",
+      "original_test_case": {
+        "title": "Pro completes onboarding without resume or position selection",
+        "type": "functional",
+        "priority": "P2 - High",
+        "preconditions": "Ensure 'new_onboarding_flow' feature is enabled and the app is freshly installed.",
+        "steps": [
+          {
+            "step_text": "Launch the Pro app and tap \"Create account\"",
+            "step_expected": "Sign-up form is displayed"
+          },
+          {
+            "step_text": "Enter first name, last name, and a valid phone number (leave email blank) then tap \"Next\"",
+            "step_expected": "SMS verification code screen is displayed"
+          },
+          {
+            "step_text": "Enter the valid verification code received via SMS and tap \"Next\"",
+            "step_expected": "If first install, OS push-notification permission prompt appears"
+          },
+          {
+            "step_text": "Tap \"Allow\" on the push-notification prompt",
+            "step_expected": "User proceeds to the profile photo screen"
+          },
+          {
+            "step_text": "Add a profile photo on the \"Add your profile photo\" screen",
+            "step_expected": "\"Next\" button becomes enabled"
+          },
+          {
+            "step_text": "Tap \"Next\" to continue",
+            "step_expected": "Date-of-birth entry screen appears"
+          },
+          {
+            "step_text": "Enter a valid birthdate (18+ years old) and tap \"Next\"",
+            "step_expected": "Location entry screen appears"
+          },
+          {
+            "step_text": "Enter a valid home location and tap \"Next\"",
+            "step_expected": "Entry-level positions selection screen appears"
+          },
+          {
+            "step_text": "Without selecting any positions, tap \"Next\"",
+            "step_expected": "Advanced positions selection screen appears"
+          },
+          {
+            "step_text": "Without selecting any advanced positions, tap \"Next\"",
+            "step_expected": "Resume import screen appears"
+          },
+          {
+            "step_text": "Tap \"Don't have a resume?\" link",
+            "step_expected": "\"Review and save profile\" screen appears with pre-filled name & location only"
+          },
+          {
+            "step_text": "Scroll to the bottom and tap \"Save profile\"",
+            "step_expected": "Contractor Service Agreement screen appears"
+          },
+          {
+            "step_text": "Scroll to the bottom of the agreement and tap \"I agree and accept\"",
+            "step_expected": "Congrats screen appears with \"Book your first shift\" CTA and green toast"
+          },
+          {
+            "step_text": "Tap \"Book your first shift\" CTA",
+            "step_expected": "Open Shifts screen appears; account status is active and six entry-level positions are auto-approved"
+          }
+        ],
+        "_file_path": "test_cases/tc_001.json",
+        "_file_name": "tc_001.json"
+      }
+    }
+  }
+]

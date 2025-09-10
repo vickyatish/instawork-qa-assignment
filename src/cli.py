@@ -31,6 +31,7 @@ def process(change_request, verbose):
             status = copilot.get_status()
             click.echo(f"{Fore.GREEN}System Status: {status['status']}{Style.RESET_ALL}")
             click.echo(f"Test cases found: {status['test_cases_count']}")
+            click.echo(f"Vector Store: {status.get('vector_store_type', 'Unknown')}")
         
         if verbose:
             click.echo(f"{Fore.BLUE}Processing change request: {change_request}{Style.RESET_ALL}")
@@ -76,7 +77,17 @@ def status():
         click.echo(f"IW Overview: {'✓' if status['iw_overview_exists'] else '✗'}")
         click.echo(f"Schema: {'✓' if status['schema_exists'] else '✗'}")
         click.echo(f"OpenAI API: {'✓' if status['openai_configured'] else '✗'}")
+        click.echo(f"Vector Store: {status.get('vector_store_type', 'Unknown')}")
         click.echo(f"Reports Directory: {status['reports_directory']}")
+        
+        # Show vector store stats if available
+        if 'vector_store_stats' in status:
+            stats = status['vector_store_stats']
+            click.echo(f"\n{Fore.CYAN}Vector Store Stats:{Style.RESET_ALL}")
+            click.echo(f"  Total Test Cases: {stats.get('total_test_cases', 0)}")
+            click.echo(f"  Is Fitted: {'✓' if stats.get('is_fitted', False) else '✗'}")
+            if 'collection_name' in stats:
+                click.echo(f"  Collection: {stats['collection_name']}")
         
     except Exception as e:
         click.echo(f"{Fore.RED}✗ Error getting status: {str(e)}{Style.RESET_ALL}")
@@ -243,6 +254,80 @@ def sessions(limit):
         raise click.Abort()
 
 @cli.command()
+@click.option('--query', '-q', required=True, help='Search query')
+@click.option('--limit', '-l', default=5, help='Number of results to return')
+def search(query, limit):
+    """Search for test cases using semantic similarity."""
+    try:
+        copilot = AITestCopilot()
+        
+        click.echo(f"{Fore.BLUE}Searching for: '{query}'{Style.RESET_ALL}")
+        results = copilot.search_test_cases(query, limit)
+        
+        if not results:
+            click.echo(f"{Fore.YELLOW}No similar test cases found.{Style.RESET_ALL}")
+            return
+        
+        click.echo(f"\n{Fore.CYAN}Found {len(results)} similar test cases:{Style.RESET_ALL}")
+        click.echo("=" * 50)
+        
+        for i, result in enumerate(results, 1):
+            score = result.get('_relevance_score', 0)
+            title = result.get('title', 'No title')
+            file_name = result.get('_file_name', 'Unknown')
+            
+            click.echo(f"{i}. {Fore.BLUE}{file_name}{Style.RESET_ALL}")
+            click.echo(f"   Title: {title}")
+            click.echo(f"   Similarity: {score:.3f}")
+            click.echo()
+        
+    except Exception as e:
+        click.echo(f"{Fore.RED}✗ Error searching: {str(e)}{Style.RESET_ALL}")
+        raise click.Abort()
+
+@cli.command()
+def vector_stats():
+    """Show vector store statistics."""
+    try:
+        copilot = AITestCopilot()
+        stats = copilot.get_vector_store_stats()
+        
+        click.echo(f"{Fore.CYAN}Vector Store Statistics{Style.RESET_ALL}")
+        click.echo("=" * 30)
+        click.echo(f"Type: FAISS")
+        click.echo(f"Total Test Cases: {stats.get('total_test_cases', 0)}")
+        click.echo(f"Is Fitted: {'✓' if stats.get('is_fitted', False) else '✗'}")
+        click.echo(f"K (Results): {stats.get('k', 5)}")
+        
+        if 'collection_name' in stats:
+            click.echo(f"Collection: {stats['collection_name']}")
+        if 'persist_directory' in stats:
+            click.echo(f"Persist Directory: {stats['persist_directory']}")
+        
+    except Exception as e:
+        click.echo(f"{Fore.RED}✗ Error getting vector stats: {str(e)}{Style.RESET_ALL}")
+        raise click.Abort()
+
+@cli.command()
+def reset_vectors():
+    """Reset the vector store (clear all data)."""
+    try:
+        copilot = AITestCopilot()
+        
+        if click.confirm(f"{Fore.YELLOW}Are you sure you want to reset the vector store? This will clear all data.{Style.RESET_ALL}"):
+            success = copilot.reset_vector_store()
+            if success:
+                click.echo(f"{Fore.GREEN}✓ Vector store reset successfully!{Style.RESET_ALL}")
+            else:
+                click.echo(f"{Fore.RED}✗ Failed to reset vector store{Style.RESET_ALL}")
+        else:
+            click.echo("Operation cancelled.")
+        
+    except Exception as e:
+        click.echo(f"{Fore.RED}✗ Error resetting vector store: {str(e)}{Style.RESET_ALL}")
+        raise click.Abort()
+
+@cli.command()
 def setup():
     """Show setup instructions."""
     click.echo(f"{Fore.CYAN}AI Test Copilot Setup Instructions{Style.RESET_ALL}")
@@ -266,6 +351,13 @@ def setup():
     click.echo("6. View metrics and sessions:")
     click.echo("   python -m src.cli metrics")
     click.echo("   python -m src.cli sessions")
+    click.echo()
+    click.echo("7. Search test cases:")
+    click.echo("   python -m src.cli search -q 'user login'")
+    click.echo()
+    click.echo("8. Vector store management:")
+    click.echo("   python -m src.cli vector-stats")
+    click.echo("   python -m src.cli reset-vectors")
     click.echo()
     click.echo("For more help:")
     click.echo("   python -m src.cli --help")

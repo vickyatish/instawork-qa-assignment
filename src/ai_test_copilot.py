@@ -6,21 +6,23 @@ from .config import Config
 from .llm_client import LLMClient
 from .test_case_manager import TestCaseManager
 from .report_generator import ReportGenerator
-from .semantic_retriever import SemanticRetriever
+from .faiss_rag_retriever import FAISSRAGRetriever
 from .observability import ObservabilityManager
 
 class AITestCopilot:
     """Main AI Test Case Copilot that orchestrates the entire process."""
     
     def __init__(self):
-        """Initialize the AI Test Copilot."""
+        """
+        Initialize the AI Test Copilot.
+        """
         self.config = Config()
         self.config.validate()
         
         self.llm_client = LLMClient()
         self.test_case_manager = TestCaseManager()
         self.report_generator = ReportGenerator()
-        self.semantic_retriever = SemanticRetriever(k=5)  # Top 5 relevant test cases
+        self.semantic_retriever = FAISSRAGRetriever(k=5)
         self.observability = ObservabilityManager()
     
     def process_change_request(self, change_request_path: str) -> str:
@@ -45,7 +47,8 @@ class AITestCopilot:
             'errors': [],
             'total_analyzed': 0,
             'total_updated': 0,
-            'total_created': 0
+            'total_created': 0,
+            'vector_store': 'FAISS'
         }
         
         try:
@@ -56,7 +59,7 @@ class AITestCopilot:
             iw_overview = self._load_iw_overview()
             all_test_cases = self.test_case_manager.load_all_test_cases()
             
-            # Step 3: Use semantic retrieval to get relevant test cases
+            # Step 3: Use enhanced semantic retrieval to get relevant test cases
             self.semantic_retriever.fit(all_test_cases)
             relevant_test_cases = self.semantic_retriever.retrieve_relevant(change_request)
             execution_summary['total_analyzed'] = len(relevant_test_cases)
@@ -78,7 +81,16 @@ class AITestCopilot:
             )
             execution_summary['total_created'] = len(new_test_cases)
             
-            # Step 7: Generate report
+            # Step 7: Update vector store with new/updated test cases
+            if new_test_cases:
+                self.semantic_retriever.fit(new_test_cases)
+            if updated_test_cases:
+                for tc in updated_test_cases:
+                    test_case_id = tc.get('_file_name', '')
+                    if test_case_id:
+                        self.semantic_retriever.update_test_case(test_case_id, tc)
+            
+            # Step 8: Generate report
             execution_time = time.time() - start_time
             execution_summary['execution_time'] = f"{execution_time:.2f} seconds"
             
@@ -266,13 +278,19 @@ class AITestCopilot:
             iw_overview_exists = os.path.exists(self.config.IW_OVERVIEW_PATH)
             schema_exists = os.path.exists(self.config.SCHEMA_PATH)
             
+            # Get semantic retriever stats
+            retriever_stats = self.semantic_retriever.get_stats()
+            
             return {
                 'status': 'ready' if self.config.OPENAI_API_KEY else 'missing_api_key',
                 'test_cases_count': len(test_case_files),
                 'iw_overview_exists': iw_overview_exists,
                 'schema_exists': schema_exists,
                 'openai_configured': bool(self.config.OPENAI_API_KEY),
-                'reports_directory': self.config.REPORTS_DIR
+                'reports_directory': self.config.REPORTS_DIR,
+                'vector_store': 'FAISS',
+                'vector_store_type': 'FAISS',
+                'vector_store_stats': retriever_stats
             }
         except Exception as e:
             return {
@@ -287,3 +305,32 @@ class AITestCopilot:
     def get_recent_sessions(self, limit: int = 10) -> List[Dict[str, Any]]:
         """Get recent processing sessions."""
         return self.observability.get_recent_sessions(limit)
+    
+    def get_vector_store_stats(self) -> Dict[str, Any]:
+        """Get vector store statistics."""
+        return self.semantic_retriever.get_stats()
+    
+    def reset_vector_store(self) -> bool:
+        """Reset the vector store (clear all data)."""
+        return self.semantic_retriever.reset()
+    
+    def search_test_cases(self, query: str, n_results: int = 5) -> List[Dict[str, Any]]:
+        """
+        Search for test cases using semantic similarity.
+        
+        Args:
+            query: Search query
+            n_results: Number of results to return
+            
+        Returns:
+            List of similar test cases with scores
+        """
+        # Only fit if not already fitted
+        if not self.semantic_retriever._is_fitted:
+            all_test_cases = self.test_case_manager.load_all_test_cases()
+            self.semantic_retriever.fit(all_test_cases)
+        
+        results = self.semantic_retriever.retrieve_relevant(query)
+        if isinstance(results, list) and len(results) > n_results:
+            return results[:n_results]
+        return results
