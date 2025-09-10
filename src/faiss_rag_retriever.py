@@ -13,7 +13,7 @@ from .config import Config
 class FAISSRAGRetriever:
     """FAISS-based RAG retriever for high-performance semantic search."""
     
-    def __init__(self, k: int = 5, db_path: str = "faiss_db", dimension: int = 384):
+    def __init__(self, k: int = 3, db_path: str = "faiss_db", dimension: int = 384):
         """
         Initialize the FAISS RAG retriever.
         

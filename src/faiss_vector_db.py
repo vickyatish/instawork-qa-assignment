@@ -190,7 +190,7 @@ class FAISSVectorDB:
         
         print(f"✓ Added {len(documents)} documents to FAISS database")
     
-    def search(self, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    def search(self, query: str, top_k: int = 3) -> List[Dict[str, Any]]:
         """
         Search for similar documents.
         

@@ -22,7 +22,7 @@ class AITestCopilot:
         self.llm_client = LLMClient()
         self.test_case_manager = TestCaseManager()
         self.report_generator = ReportGenerator()
-        self.semantic_retriever = FAISSRAGRetriever(k=5)
+        self.semantic_retriever = FAISSRAGRetriever(k=3)
         self.observability = ObservabilityManager()
     
     def process_change_request(self, change_request_path: str) -> str:
@@ -314,7 +314,7 @@ class AITestCopilot:
         """Reset the vector store (clear all data)."""
         return self.semantic_retriever.reset()
     
-    def search_test_cases(self, query: str, n_results: int = 5) -> List[Dict[str, Any]]:
+    def search_test_cases(self, query: str, n_results: int = 3) -> List[Dict[str, Any]]:
         """
         Search for test cases using semantic similarity.
         
